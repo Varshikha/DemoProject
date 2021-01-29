@@ -5,6 +5,11 @@ pipeline {
   }
   agent any
   stages {
+    stage('Cloning Git') {
+      steps {
+        git 'https://github.com/Varshikha/DemoProject.git'
+      }
+    }
     stage('Building image') {
       steps{
         sh "docker build -t $registry:1.0 ."
