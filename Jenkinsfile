@@ -13,6 +13,7 @@ pipeline {
     stage('Building image') {
       steps{
         sh "docker build -t $registry:1.1 ."
+        sh "docker run -d -p 8080:80 $registry:1.1"
       }
     }
     stage('Deploy Image') {
