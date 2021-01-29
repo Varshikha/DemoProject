@@ -12,7 +12,7 @@ pipeline {
     }
     stage('Building image') {
       steps{
-        sh "docker build -t $registry:1.0 ."
+        sh "docker build -t $registry:1.1 ."
       }
     }
     stage('Deploy Image') {
@@ -20,14 +20,14 @@ pipeline {
         script {
           withCredentials([usernamePassword( credentialsId: 'dockerhub', usernameVariable: 'USR', passwordVariable: 'PWD')]) {
           sh "docker login -u ${USR} -p ${PWD}"
-          sh "docker push $registry:1.0"
+          sh "docker push $registry:1.1"
           }
         }
       }
     }
     stage('Remove Unused docker image') {
       steps{
-        sh "docker rmi $registry:1.0"
+        sh "docker rmi $registry:1.1"
       }
     }
   }
