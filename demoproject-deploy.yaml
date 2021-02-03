@@ -1,0 +1,51 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: devapachehttp
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apache-httpd
+  namespace: devapachehttp
+  labels:
+    app: apache-httpd
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: apache-httpd
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: apache-httpd
+        tier: frontend
+    spec:
+      containers:
+      - name: apache-httpd
+        image: varshakashyap/apache_httpd:${BUILD_NUMBER}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+          name: apache-httpd
+ 
+--- 
+apiVersion: v1
+kind: Service
+metadata:
+  name: apache-httpd
+  namespace: devapachehttp
+  labels:
+    app: apache-httpd
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30050
+  selector:
+    app: apache-httpd
+    tier: frontend
