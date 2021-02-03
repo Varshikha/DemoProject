@@ -13,12 +13,12 @@ pipeline {
       }
     }
     stage('Building image') {
-      steps{
+      steps {
         sh "docker build -t $registry:$BUILD_NUMBER ."
       }
     }
     stage('Pushing image to dockerhub registry') {
-      steps{
+      steps {
         script {
           withCredentials([usernamePassword( credentialsId: 'dockerhub', usernameVariable: 'USR', passwordVariable: 'PWD')]) {
           sh "docker login -u ${USR} -p ${PWD}"
@@ -28,12 +28,18 @@ pipeline {
       }
     }
     stage('Deploying image') {
-      steps{
-        sh "docker run -d -p 8080:80 $registry:$BUILD_NUMBER"
+      steps {
+        script {
+          withKubeConfig([credentialsId: 'APILoginVUser', serverUrl: 'https://lb.coe.com/k8s/clusters/c-thsfs']) {
+          sh 'kubectl version --short'
+          sh "BUILD_NUMBER=${BUILD_NUMBER} && envsubst < demoproject-deploy.yaml > demoproject.yaml"
+          sh 'kubectl apply -f demoproject.yaml'
+          }
+        }
       }
     }
     stage('Remove Unused docker image') {
-      steps{
+      steps {
         sh "docker rmi $registry:$BUILD_NUMBER"
       }
     }
