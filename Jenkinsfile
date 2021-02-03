@@ -32,8 +32,8 @@ pipeline {
         script {
           withKubeConfig([credentialsId: 'APILoginVUser', serverUrl: 'https://lb.coe.com/k8s/clusters/c-thsfs']) {
           sh 'kubectl version --short'
-          sh "BUILD_NUMBER=${BUILD_NUMBER} && envsubst < demoproject-deploy.yaml > demoproject.yaml"
-          sh 'kubectl apply -f demoproject.yaml'
+          sh "BUILD_NUMBER=${BUILD_NUMBER} && envsubst < demoproject-deploy.yaml > apachehttp.yaml"
+          sh 'kubectl apply -f apachehttp.yaml'
           }
         }
       }
