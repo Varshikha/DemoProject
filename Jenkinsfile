@@ -3,7 +3,9 @@ pipeline {
     registry = "varshakashyap/apache_httpd"
     registryCredential = 'dockerhub'
   }
-  agent any
+  agent {
+        label 'master'
+    }
   stages {
     stage('Cloning Git') {
       steps {
